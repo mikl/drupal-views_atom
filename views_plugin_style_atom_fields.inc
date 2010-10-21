@@ -35,6 +35,7 @@ class views_plugin_style_atom_fields extends views_plugin_style {
     $options['entry_type'] = array('default' => 'text');
     $options['entry_type_custom'] = array('default' => '');
     $options['description']['feed_description'] = array('default' => '');
+    $options['fields'] = array('default' => array());
 
     return $options;
   }
