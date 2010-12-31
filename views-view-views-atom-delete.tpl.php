@@ -10,7 +10,7 @@
   <updated><?php echo $updated; ?></updated>
   <generator uri="<?php echo $link; ?>">Drupal</generator>
   <?php foreach ($items as $item) : ?>
-    <at:deleted-entry ref="<?php echo $item['uri']; ?>" when="<?php echo $item['when']; ?>">
+    <at:deleted-entry ref="<?php echo $item['guid']; ?>" when="<?php echo $item['when']; ?>">
       <?php if ($item['by']) : ?>
           <at:by>
             <?php if ($item['by']['name']) :?>
