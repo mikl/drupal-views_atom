@@ -45,9 +45,10 @@ function template_preprocess_views_view_views_atom_fields(&$vars) {
 
     // We need to know the updated time of the most recently updated entry
     // so that we can set the whole feed's updated time to that.
-    $alias = $view->field[$options['fields']['atom_updated']]->field_alias;
-    $updated = max($item->$alias, $updated);
-
+    if (!empty($options['fields']['atom_updated']) && !empty($view->field[$options['fields']['atom_updated']])) {
+      $alias = $view->field[$options['fields']['atom_updated']]->field_alias;
+      $updated = max($item->$alias, $updated);
+    }
     $vars['content'] .= theme('views_atom_fields_item', $content, $view, $item);
   }
 
