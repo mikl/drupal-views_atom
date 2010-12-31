@@ -7,14 +7,14 @@ function template_preprocess_views_view_views_atom(&$vars) {
   $options = $view->style_options;
 
   // Set basic info about the feed.
-  $vars['view_title'] = variable_get('site_name', array()) . ' | ' . $view->get_title();
+  $vars['view_title'] = variable_get('site_name', 'Drupal') . ' | ' . $view->get_title();
   $vars['description'] = ($options['description']['feed_description']) ? $options['description']['feed_description'] :  variable_get('site_mission', '');
 
   // Base URL for link tag
   global $base_url;
   $vars['link'] = $base_url;
 
-  $vars['site_name'] = variable_get('site_name', '');
+  $vars['site_name'] = variable_get('site_name', 'Drupal');
 
 
   // If the push_hub module is enabled, we want to enable PuSH functionality
