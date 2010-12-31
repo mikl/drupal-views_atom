@@ -110,9 +110,11 @@ function template_preprocess_views_atom_fields_item(&$vars) {
 
   $vars['entry_type'] = ($options['entry_type'] == 'xml') ? $options['entry_type_custom'] : $options['entry_type'];
 
+  $nid_alias = isset($view->field['nid']) ? $view->field['nid']->field_alias : 'nid';
+  
   // Figure out which results go with the row we're working with.
   foreach ($view->result as $key => $result) {
-    if ($result->nid == $item->nid) {
+    if ($result->{$nid_alias} == $item->{$nid_alias}) {
       $result_id = $key;
     }
   }
@@ -129,13 +131,13 @@ function template_preprocess_views_atom_fields_item(&$vars) {
     }
   }
 
-  $vars['atom_uuid'] = views_atom_guid('node', $item->nid);
+  $vars['atom_uuid'] = views_atom_guid('node', $item->{$nid_alias});
 
   if (empty($vars['atom_url'])) {
     // If the user did not set up an atom_url in the view, set a default.
     // In contrast to what views_atom_guid() currently provides, this URL
     // includes the path alias and possible associated PURL.
-    $vars['atom_url'] = url('node/'. $item->nid, array('absolute' => TRUE));
+    $vars['atom_url'] = url('node/'. $item->{$nid_alias}, array('absolute' => TRUE));
   }
   if ($vars['atom_published']) {
     // format_date() doesn't support the 'c' formatting code.
