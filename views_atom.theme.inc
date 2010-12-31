@@ -74,11 +74,11 @@ function template_preprocess_views_view_views_atom_delete(&$vars) {
   $vars['updated'] = $now;
 
   $vars['items'] = array();
-
+  $guid_options = isset($vars['view']->style_options['guid']) ? $vars['view']->style_options['guid'] : array();
   // Now process the rows into deletion information.
   foreach ($vars['rows'] as $i => $row) {
     $item = array(
-      'guid' => views_atom_guid('node', $row->nid),
+      'guid' => views_atom_guid('node', $row->nid, $guid_options),
       'when' => $now,
       'by' => array(
         'name' => '',
@@ -131,8 +131,8 @@ function template_preprocess_views_atom_fields_item(&$vars) {
       $vars[$field] = '';
     }
   }
-
-  $vars['atom_uuid'] = views_atom_guid('node', $item->{$nid_alias});
+  $guid_options = isset($view->style_options['guid']) ? $view->style_options['guid'] : array();
+  $vars['atom_uuid'] = views_atom_guid('node', $item->{$nid_alias}, $guid_options);
 
   if (empty($vars['atom_url'])) {
     // If the user did not set up an atom_url in the view, set a default.

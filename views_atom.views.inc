@@ -36,7 +36,7 @@ function views_atom_views_plugins() {
     'path' => drupal_get_path('module', 'views_atom'),
     'uses row plugin' => FALSE,
     'uses fields' => FALSE,
-    'uses options' => FALSE,
+    'uses options' => TRUE,
     'uses grouping' => FALSE,
     'type' => 'feed',
   );

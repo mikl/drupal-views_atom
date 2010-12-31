@@ -36,6 +36,9 @@ class views_plugin_style_atom_fields extends views_plugin_style {
     $options['entry_type_custom'] = array('default' => '');
     $options['description']['feed_description'] = array('default' => '');
     $options['fields'] = array('default' => array());
+    $options['guid'] = array(
+      'use_feed' => array('default' => array()), 
+    );
 
     return $options;
   }
@@ -115,6 +118,23 @@ class views_plugin_style_atom_fields extends views_plugin_style {
           '#default_value' => $this->options['fields'][$k],
         );
       }
+      // Feed Description
+      $form['guid'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('GUID settings'),
+        '#description' => t('Controls how the GUID is created.'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      );
+      if (module_exists('feeds')) {
+        $form['guid']['use_existing_from_feed'] = array(
+          '#title' => t('Use existing GUID when available'),
+          '#type' => 'checkbox',
+          '#default_value' => !empty($this->options['guid']['use_existing_from_feed']),
+          '#description' => t('If the node was imported into the site from another feed, use the original GUID.'),
+        );
+      }
+      $form['guid']['#access'] = count(element_children($form['guid'])) ? TRUE : FALSE;
     }
   }
 
