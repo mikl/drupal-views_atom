@@ -1,4 +1,3 @@
-; $Id$
 name = Views Atom
 description = Atom integration for Views
 dependencies[] = views

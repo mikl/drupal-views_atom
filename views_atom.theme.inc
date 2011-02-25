@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 
 function template_preprocess_views_view_views_atom(&$vars) {
