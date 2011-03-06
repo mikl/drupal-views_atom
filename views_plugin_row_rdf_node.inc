@@ -33,7 +33,7 @@ class views_plugin_row_rdf_node extends views_plugin_row_rdf {
     // is abysmal.  Fortunately we can swap back and forth as needed.
     // @todo: Add more common namespaces here if needed.
     $dom = new DOMDocument('1.0');
-    $rdf_xml = $dom->createElementNS('http://www.w3.org/1999/02/22-rdf-syntax-ns', 'rdf:RDF');
+    $rdf_xml = $dom->createElementNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'rdf:RDF');
     $dom->appendChild($rdf_xml);
 
     // Get a SimpleXML version of the object for serious manipulation, since
