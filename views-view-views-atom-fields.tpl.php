@@ -2,7 +2,8 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title><?php print $view_title; ?></title>
-  <link href="<?php print $link ?>"/>
+  <link href="<?php print $link ?>" rel="self" />
+  <id><?php print $id ?></id>
   <?php if ($use_push) : ?>
     <link rel="hub" href="<?php echo $hub_url; ?>" />
     <link rel="self" href="<?php echo $feed_url; ?>" />

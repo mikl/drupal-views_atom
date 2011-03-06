@@ -9,7 +9,7 @@
   <author>
     <name><?php print $atom_author; ?></name>
     <email><?php print $atom_author_email; ?></email>
-    <url><?php print $atom_author_url; ?></url>
+    <uri><?php print $atom_author_url; ?></uri>
   </author>
   <content type="<?php echo $entry_type; ?>" xml:lang="<?php echo $language; ?>">
     <?php print $content; ?>

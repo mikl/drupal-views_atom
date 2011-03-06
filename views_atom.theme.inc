@@ -9,13 +9,14 @@ function template_preprocess_views_view_views_atom(&$vars) {
   $vars['view_title'] = variable_get('site_name', 'Drupal') . ' | ' . $view->get_title();
   $vars['description'] = ($options['description']['feed_description']) ? $options['description']['feed_description'] :  variable_get('site_mission', '');
 
-  // Base URL for link tag
   global $base_url;
-  $vars['link'] = $base_url;
+  
+  // This is the URL of the feed itself
+  $vars['link'] = $base_url . $_SERVER['REQUEST_URI'];
+  $vars['id'] = $base_url . $_SERVER['REQUEST_URI'];
 
   $vars['site_name'] = variable_get('site_name', 'Drupal');
-
-
+  
   // If the push_hub module is enabled, we want to enable PuSH functionality
   // for this feed, too.
   $vars['use_push'] = FALSE;
