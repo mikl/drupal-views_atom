@@ -71,6 +71,12 @@ function views_atom_rules_action_add_to_feed($node, $settings) {
   $view->set_display($settings['view_display']);
 
   if ($view->access($settings['view_display'])) {
+
+    // If this node existed in the system prior to this page request, there is a chance
+    // that it needs to be reloaded and thus node_load() needs to be reset.
+    node_load($param = array(), $revision = NULL, $reset = TRUE);
+
+    // Get the atom-formatted-data for this node.
     $result = $view->preview($settings['view_display'], array($nid));
     // Only PuSH the feed if there is actual data.  The view may have filtered
     // our nids down to 0, in which case we don't want to send anything. Because
@@ -127,6 +133,12 @@ function views_atom_rules_action_add_nids_to_feed($nids, $settings) {
 
     if ($view->access($settings['view_display'])) {
       $nid_string = implode(',', $nids);
+
+      // If these nodes existed in the system prior to this page request, there is a chance
+      // that they need to be reloaded and thus node_load() needs to be reset.
+      node_load($param = array(), $revision = NULL, $reset = TRUE);
+
+      // Get the atom-formatted-data for these nodes.
       $result = $view->preview($settings['view_display'], array($nid_string));
       // Only PuSH the feed if there is actual data.  The view may have filtered
       // our nids down to 0, in which case we don't want to send anything. Because
