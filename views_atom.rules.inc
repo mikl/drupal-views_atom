@@ -122,7 +122,7 @@ function views_atom_rules_action_add_nids_to_feed_form($settings, &$form) {
  * Helper form element validator: integer >= 0.
  *
  * This is a backport, and slight modification, of Drupal 7's _element_validate_integer_positive().
- * This allows function allows zero.
+ * This function allows zero.
  */
 function views_atom_element_validate_integer_positive_or_zero($element, &$form_state) {
   $value = $element['#value'];
