@@ -10,13 +10,13 @@ function template_preprocess_views_view_views_atom(&$vars) {
   $vars['description'] = ($options['description']['feed_description']) ? $options['description']['feed_description'] :  variable_get('site_mission', '');
 
   global $base_url;
-  
+
   // This is the URL of the feed itself
   $vars['link'] = $base_url . $_SERVER['REQUEST_URI'];
   $vars['id'] = $base_url . $_SERVER['REQUEST_URI'];
 
   $vars['site_name'] = variable_get('site_name', 'Drupal');
-  
+
   // If the push_hub module is enabled, we want to enable PuSH functionality
   // for this feed, too.
   $vars['use_push'] = FALSE;
@@ -27,7 +27,7 @@ function template_preprocess_views_view_views_atom(&$vars) {
     $vars['hub_url'] = url('pubsubhubbub/endpoint', array('absolute' => TRUE));
 
     // This is the URL of the feed itself.
-    $vars['feed_url'] = filter_xss_admin('http://'. $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+    $vars['feed_url'] = filter_xss_admin('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
   }
 }
 
@@ -49,12 +49,12 @@ function template_preprocess_views_view_views_atom_fields(&$vars) {
       $alias = $view->field[$options['fields']['atom_updated']]->field_alias;
       $updated = max($item->$alias, $updated);
     }
-    $vars['content'] .= theme('views_atom_fields_item', $content, $view, $item);
+    $vars['content'] .= theme('views_atom_fields_item', array('content' => $content, 'view' => $view, 'item' => $item));
   }
 
   // If this is an empty feed, set the last updated time to right now.
   if (!$updated) {
-    $updated = time();
+    $updated = REQUEST_TIME;
   }
 
   $vars['updated'] = date('c', $updated);
@@ -112,7 +112,7 @@ function template_preprocess_views_atom_fields_item(&$vars) {
   $vars['entry_type'] = ($options['entry_type'] == 'xml') ? $options['entry_type_custom'] : $options['entry_type'];
 
   $nid_alias = isset($view->field['nid']) ? $view->field['nid']->field_alias : 'nid';
-  
+
   // Figure out which results go with the row we're working with.
   foreach ($view->result as $key => $result) {
     if ($result->{$nid_alias} == $item->{$nid_alias}) {
@@ -127,7 +127,8 @@ function template_preprocess_views_atom_fields_item(&$vars) {
     }
     else if (!empty($view->style_plugin->rendered_fields[$result_id][$column])) {
       $vars[$field] = filter_xss_admin($view->style_plugin->rendered_fields[$result_id][$column]);
-    } else {
+    }
+    else {
       $vars[$field] = '';
     }
   }
@@ -138,7 +139,7 @@ function template_preprocess_views_atom_fields_item(&$vars) {
     // If the user did not set up an atom_url in the view, set a default.
     // In contrast to what views_atom_guid() currently provides, this URL
     // includes the path alias and possible associated PURL.
-    $vars['atom_url'] = url('node/'. $item->{$nid_alias}, array('absolute' => TRUE));
+    $vars['atom_url'] = url('node/' . $item->{$nid_alias}, array('absolute' => TRUE));
   }
   if ($vars['atom_published']) {
     // format_date() doesn't support the 'c' formatting code.
@@ -157,7 +158,8 @@ function template_preprocess_views_atom_fields_item(&$vars) {
  * Theme function for feed icon.
  */
 function theme_views_atom_feed_icon($url, $title, $icon) {
-  if ($image = theme('image', $icon, t('Download Atom Feed'), $title)) {
-    return '<a href="'. check_url($url) .'" class="feed-icon">'. $image .'</a>';
+  // TODO: Should this theme views_atom_feed_icon be declared in hook_theme()?
+  if ($image = theme('image', array('path' => $icon, 'width' => t('Download Atom Feed'), 'height' => $title))) {
+    return '<a href="' . check_url($url) . '" class="feed-icon">' . $image . '</a>';
   }
 }

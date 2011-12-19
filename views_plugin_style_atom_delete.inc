@@ -14,14 +14,13 @@ class views_plugin_style_atom_delete extends views_plugin_style {
   /**
    * Attach this view to another display as a feed.
    */
-  function attach_to($display_id, $path, $title) {
-  }
+  function attach_to($display_id, $path, $title) { }
 
 
   function option_definition() {
     $options = parent::option_definition();
     $options['guid'] = array(
-      'use_feed' => array('default' => array()), 
+      'use_feed' => array('default' => array()),
     );
 
     return $options;

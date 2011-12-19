@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Implementation of hook_rules_action_info
+ * Implements hook_rules_action_info().
  */
 function views_atom_rules_action_info() {
   $actions['views_atom_rules_action_add_to_feed'] = array(
@@ -37,14 +37,14 @@ function views_atom_rules_action_info() {
 function views_atom_rules_action_add_to_feed_form($settings, &$form) {
 
   foreach (views_atom_get_feed_displays() as $entry) {
-    $options[$entry['title']][$entry['name'] .'-'. $entry['display']] = $entry['display_title'];
+    $options[$entry['title']][$entry['name'] . '-' . $entry['display']] = $entry['display_title'];
   }
 
   $form['generating_display'] = array(
     '#type' => 'select',
     '#title' => t('Generating view'),
     '#options' => $options,
-    '#default_value' => $settings['view'] .'-'. $settings['view_display'],
+    '#default_value' => $settings['view'] . '-' . $settings['view_display'],
     '#description' => t('Select the view and display that is responsible for generating the feed for this node. Only Feed displays are available.'),
   );
 }
@@ -98,14 +98,14 @@ function views_atom_rules_action_add_to_feed($node, $settings) {
 function views_atom_rules_action_add_nids_to_feed_form($settings, &$form) {
 
   foreach (views_atom_get_feed_displays() as $entry) {
-    $options[$entry['title']][$entry['name'] .'-'. $entry['display']] = $entry['display_title'];
+    $options[$entry['title']][$entry['name'] . '-' . $entry['display']] = $entry['display_title'];
   }
 
   $form['generating_display'] = array(
     '#type' => 'select',
     '#title' => t('Generating view'),
     '#options' => $options,
-    '#default_value' => $settings['view'] .'-'. $settings['view_display'],
+    '#default_value' => $settings['view'] . '-' . $settings['view_display'],
     '#description' => t('Select the view and display that is responsible for generating the feed for these nodes. Only Feed displays are available.'),
   );
 
@@ -164,7 +164,7 @@ function views_atom_rules_action_add_nids_to_feed($nids, $settings) {
     $chunked_array = array_chunk($nids, $chunk_size);
 
     // Loop through each chunk to render it as atom and send it with push_hub.
-    foreach  ($chunked_array as $nids_chunk) {
+    foreach ($chunked_array as $nids_chunk) {
       $view = views_get_view($settings['view']);
       $view->set_display($settings['view_display']);
 

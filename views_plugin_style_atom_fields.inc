@@ -25,7 +25,7 @@ class views_plugin_style_atom_fields extends views_plugin_style {
    */
   function attach_to($display_id, $path, $title) {
     $url_options = array('html' => true);
-    $image = theme('image', $this->feed_image);
+    $image = theme('image', array('path' => $this->feed_image));
     $this->view->feed_icon .= l($image, $path, $url_options);
   }
 
@@ -36,7 +36,7 @@ class views_plugin_style_atom_fields extends views_plugin_style {
     $options['description']['feed_description'] = array('default' => '');
     $options['fields'] = array('default' => array());
     $options['guid'] = array(
-      'use_feed' => array('default' => array()), 
+      'use_feed' => array('default' => array()),
     );
 
     return $options;
@@ -146,27 +146,27 @@ class views_plugin_style_atom_fields extends views_plugin_style {
         'label' => t('Title'),
         'required' => TRUE,
       ),
-      'atom_summary' =>  array(
+      'atom_summary' => array(
         'label' => t('Summary'),
       ),
-      'atom_url' =>  array(
+      'atom_url' => array(
         'label' => t('URL'),
         'required' => TRUE,
       ),
-      'atom_updated' =>  array(
+      'atom_updated' => array(
         'label' => t('Updated'),
         'required' => TRUE,
       ),
-      'atom_published' =>  array(
+      'atom_published' => array(
         'label' => t('Published'),
       ),
-      'atom_author' =>  array(
+      'atom_author' => array(
         'label' => t('Author Name'),
       ),
-      'atom_author_email' =>  array(
+      'atom_author_email' => array(
         'label' => t('Author Email'),
       ),
-      'atom_author_url' =>  array(
+      'atom_author_url' => array(
         'label' => t('Author URL'),
       ),
     );
@@ -189,7 +189,7 @@ class views_plugin_style_atom_fields extends views_plugin_style {
     }
     return $errors;
   }
-  
+
   function map_rows($rows) {
     // Fields must be rendered in order as of Views 2.3, so we will pre-render everything.
     $renders = array();
@@ -205,7 +205,9 @@ class views_plugin_style_atom_fields extends views_plugin_style {
     foreach ($renders as $id => $row) {
       $item = array();
       foreach ($this->options['fields'] as $key => $val) {
-        if (!isset($this->view->field[$val])) continue;
+        if (!isset($this->view->field[$val])) {
+          continue;
+        }
         $item[$key] = htmlentities($row[$val], ENT_QUOTES, '', FALSE);
       }
       $items[] = $item;

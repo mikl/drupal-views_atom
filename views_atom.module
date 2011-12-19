@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Implementation of hook_init().
+ * Implements hook_init().
  */
 function views_atom_init() {
   //require_once drupal_get_path('module', 'views_atom') .'/views_atom.theme.inc';
 }
 
 /**
- * Implementation of hook_views_api().
+ * Implements hook_views_api().
  */
 function views_atom_views_api() {
   return array(
@@ -17,12 +17,12 @@ function views_atom_views_api() {
 }
 
 /**
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function views_atom_theme() {
   return array(
     'views_atom_fields_item' => array(
-      'arguments' => array(
+      'variables' => array(
         'content' => '',
         'view' => NULL,
         'item' => NULL,
@@ -30,8 +30,8 @@ function views_atom_theme() {
       'file' => 'views_atom.theme.inc',
       'template' => 'views-atom-fields-item',
     ),
-   'views_rss_feed_icon' => array(
-      'arguments' => array('url', 'title', 'icon'),
+    'views_rss_feed_icon' => array(
+      'variables' => array('url', 'title', 'icon'),
       'file' => 'views_atom.theme.inc',
     ),
   );
@@ -62,7 +62,12 @@ function views_atom_get_feed_displays() {
             if (!$title) {
               $title = $view->name;
             }
-            $used_views[] = array('name' => $view->name, 'display' => $display_id, 'title' => $title, 'display_title' => $display->display_title);
+            $used_views[] = array(
+              'name' => $view->name,
+              'display' => $display_id,
+              'title' => $title,
+              'display_title' => $display->display_title,
+            );
           }
         }
         $view->destroy();
@@ -94,7 +99,7 @@ function views_atom_guid($entity_type, $entity_id, $options = array()) {
 
   // See if there already exists a guid for this node if configured to.
   if (!empty($options['use_existing_from_feed']) && $entity_type == 'node' && module_exists('feeds')) {
-    $temp_guid = db_result(db_query("SELECT guid FROM {feeds_node_item} WHERE nid = '%s'", $entity_id));
+    $temp_guid = db_query("SELECT guid FROM {feeds_node_item} WHERE nid = :nid", array(':nid' => $entity_id))->fetchField();
     if ($temp_guid) {
       $guid = $temp_guid;
     }
@@ -208,7 +213,7 @@ function taxonomy_views_atom_render($node, $entity_xml) {
     $term_xml->addChild('title', $term->name);
     $term_xml->addChild('subject', $term->name);
     $term_xml->addChild('description', views_atom_sanitize($term->description));
-    $term_xml->addChild('vocabulary', $vocabulary->name);
+    $term_xml->addChild('taxonomy_vocabulary', $vocabulary->name);
   }
 }
 

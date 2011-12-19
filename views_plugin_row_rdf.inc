@@ -23,6 +23,7 @@ class views_plugin_row_rdf extends views_plugin_row {
       return;
     }
 
+    // TODO Please change this theme call to use an associative array for the $variables parameter.
     return theme($this->theme_functions(), $this->view, $this->options, $row);
   }
 }
