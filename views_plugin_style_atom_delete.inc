@@ -20,12 +20,12 @@ class views_plugin_style_atom_delete extends views_plugin_style {
   function option_definition() {
     $options = parent::option_definition();
     $options['guid'] = array(
+      // TODO determine what this variable is.
       'use_feed' => array('default' => array()),
     );
 
     return $options;
   }
-
 
   /**
    * Provide a form for setting options.
@@ -34,15 +34,16 @@ class views_plugin_style_atom_delete extends views_plugin_style {
     parent::options_form($form, $form_state);
     $options = parent::option_definition();
 
-    $handlers = $this->display->handler->get_handlers('field');
-    $form['guid'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('GUID settings'),
-      '#description' => t('Controls how the GUID is created.'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-    );
     if (module_exists('feeds')) {
+
+      $form['guid'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('GUID settings'),
+        '#description' => t('Controls how the GUID is created.'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      );
+
       $form['guid']['use_existing_from_feed'] = array(
         '#title' => t('Use existing GUID when available'),
         '#type' => 'checkbox',
