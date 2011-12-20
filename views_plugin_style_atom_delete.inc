@@ -54,4 +54,17 @@ class views_plugin_style_atom_delete extends views_plugin_style {
     $form['guid']['#access'] = count(element_children($form['guid'])) ? TRUE : FALSE;
   }
 
+  function query() {
+    parent::query();
+
+    // TODO
+    // I don't think this is a good way to do this.
+    if (empty($this->view->query->fields['nid'])) {
+      $this->view->query->fields['nid'] = array(
+        'field' => 'nid',
+        'table' => 'node',
+        'alias' => 'nid',
+      );
+    }
+  }
 }
