@@ -4,6 +4,7 @@ dependencies[] = views
 package = Views
 core = 7.x
 php = 5.2
+files[] = views_atom.theme.inc
 files[] = views_plugin_row_rdf.inc
 files[] = views_plugin_row_rdf_node.inc
 files[] = views_plugin_style_atom_delete.inc
