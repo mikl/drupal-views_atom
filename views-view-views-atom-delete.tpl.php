@@ -21,7 +21,7 @@
             <?php endif; ?>
           </at:by>
       <?php endif; ?>
-      <?php if ($item['comment']) : ?>
+      <?php if (!empty($item['comment'])) : ?>
         <at:comment><?php echo $item['comment']; ?></at:comment>
       <?php endif; ?>
     </at:deleted-entry>

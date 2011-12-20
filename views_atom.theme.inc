@@ -7,7 +7,7 @@ function template_preprocess_views_view_views_atom(&$vars) {
 
   // Set basic info about the feed.
   $vars['view_title'] = variable_get('site_name', 'Drupal') . ' | ' . $view->get_title();
-  $vars['description'] = ($options['description']['feed_description']) ? $options['description']['feed_description'] :  variable_get('site_mission', '');
+  $vars['description'] = !empty($options['description']['feed_description']) ? $options['description']['feed_description'] :  variable_get('site_mission', '');
 
   global $base_url;
 
@@ -62,6 +62,7 @@ function template_preprocess_views_view_views_atom_fields(&$vars) {
 }
 
 function template_preprocess_views_view_views_atom_delete(&$vars) {
+
   global $user;
 
   // Inherit the base processing for all atom feeds.
