@@ -121,12 +121,17 @@ function template_preprocess_views_atom_fields_item(&$vars) {
   }
 
   foreach ($options['fields'] as $field => $column) {
-    $alias = $view->field[$column]->field_alias;
-    if (!empty($item->$alias)) {
-      $vars[$field] = filter_xss_admin($item->$alias);
-    }
-    else if (!empty($view->style_plugin->rendered_fields[$result_id][$column])) {
-      $vars[$field] = filter_xss_admin($view->style_plugin->rendered_fields[$result_id][$column]);
+    if (!empty($view->field[$column]->field_alias)) {
+      $alias = $view->field[$column]->field_alias;
+      if (!empty($item->$alias)) {
+        $vars[$field] = filter_xss_admin($item->$alias);
+      }
+      else if (!empty($view->style_plugin->rendered_fields[$result_id][$column])) {
+        $vars[$field] = filter_xss_admin($view->style_plugin->rendered_fields[$result_id][$column]);
+      }
+      else {
+        $vars[$field] = '';
+      }
     }
     else {
       $vars[$field] = '';
