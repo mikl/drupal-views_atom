@@ -36,6 +36,7 @@ class views_plugin_style_atom_fields extends views_plugin_style {
     $options['description']['feed_description'] = array('default' => '');
     $options['fields'] = array('default' => array());
     $options['guid'] = array(
+      // TODO determine what this variable is.
       'use_feed' => array('default' => array()),
     );
 
