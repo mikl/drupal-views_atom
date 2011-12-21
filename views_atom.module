@@ -201,19 +201,21 @@ function filefield_views_atom_render_field(SimpleXMLElement $field_xml, $field, 
  */
 function taxonomy_views_atom_render($node, $entity_xml) {
   $taxonomy_xml = $entity_xml->addChild('taxonomy');
-  foreach ($node->taxonomy as $tid => $term) {
-    global $base_url;
-    $term_path = url(taxonomy_term_path($term), array('absolute' => TRUE, 'alias' => TRUE));
-    $vocabulary = taxonomy_vocabulary_load($term->vid);
 
-    $term_xml = $taxonomy_xml->addChild('term');
-    $term_xml->addAttribute('name', $term->name);
-    $term_xml->addChild('link', $term_path);
-    $term_xml->addChild('label', $term->name);
-    $term_xml->addChild('title', $term->name);
-    $term_xml->addChild('subject', $term->name);
-    $term_xml->addChild('description', views_atom_sanitize($term->description));
-    $term_xml->addChild('taxonomy_vocabulary', $vocabulary->name);
+  if (!empty($node->taxonomy)) {
+    foreach ($node->taxonomy as $tid => $term) {
+      global $base_url;
+      $term_path = url(taxonomy_term_path($term), array('absolute' => TRUE, 'alias' => TRUE));
+      $vocabulary = taxonomy_vocabulary_load($term->vid);
+
+      $term_xml = $taxonomy_xml->addChild('term');
+      $term_xml->addAttribute('name', $term->name);
+      $term_xml->addChild('link', $term_path);
+      $term_xml->addChild('label', $term->name);
+      $term_xml->addChild('title', $term->name);
+      $term_xml->addChild('subject', $term->name);
+      $term_xml->addChild('description', views_atom_sanitize($term->description));
+      $term_xml->addChild('taxonomy_vocabulary', $vocabulary->name);
+    }
   }
 }
-
