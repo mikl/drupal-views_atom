@@ -145,22 +145,23 @@ function views_atom_sanitize($string) {
 /**
  * Implementation of hook_views_atom_render().
  */
-function content_views_atom_render($node, $entity_xml) {
-  // If there are any Fields associated with this entity, those each get
-  // added via a <field> element.  Each <field> element is assumed to be
-  // multi-value, just as Fields in Drupal are.
 
-  // This is totally the wrong way to do it, but CCK's API is too convoluted
-  // for me to figure out something else right now.
-  $result = db_query("SELECT field_name, type FROM {content_node_field}");
+function field_views_atom_render($node, $entity_xml) {
 
-  while ($record = db_fetch_object($result)) {
-    if (!empty($node->{$record->field_name})) {
-      $field = array_filter($node->{$record->field_name});
+  // TODO, this is still completely node-centric
+  $fields = field_info_instances('node', $node->type);
+
+  foreach ($fields as $field_name => $field_config) {
+    if (!empty($node->{$field_name})) {
+      $field = array_filter($node->{$field_name});
+      $field_info = field_info_field($field_name);
+
       $field_xml = $entity_xml->addChild('field');
-      $field_xml->addAttribute('type', $record->type);
-      $field_xml->addAttribute('name', $record->field_name);
-      foreach ($field as $instance) {
+      $field_xml->addAttribute('type', $field_info['type']);
+      $field_xml->addAttribute('name', $field_name);
+
+      // TODO Need to account for language.
+      foreach ($field[LANGUAGE_NONE] as $instance) {
         $field_instance_xml = $field_xml->addChild('field-instance');
         foreach ($instance as $column => $value) {
           $serialize = FALSE;
@@ -176,7 +177,7 @@ function content_views_atom_render($node, $entity_xml) {
         }
       }
 
-      module_invoke_all('views_atom_render_field', $field_xml, $field, $record->type);
+      module_invoke_all('views_atom_render_field', $field_xml, $field, $field_info['type']);
     }
   }
 }
