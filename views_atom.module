@@ -162,7 +162,7 @@ function field_views_atom_render($node, $entity_xml) {
 
       foreach ($field as $language_code => $field_language_instances) {
         $field_instance_language_xml = $field_xml->addChild('language');
-        $field_instance_language_xml->addAttribute('type', $language_code);
+        $field_instance_language_xml->addAttribute('name', $language_code);
 
         // TODO Need to account for language.
         foreach ($field_language_instances as $instance) {
