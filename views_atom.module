@@ -164,22 +164,22 @@ function field_views_atom_render($node, $entity_xml) {
         $field_instance_language_xml = $field_xml->addChild('language');
         $field_instance_language_xml->addAttribute('type', $language_code);
 
-      // TODO Need to account for language.
-      foreach ($field_language_instances as $instance) {
-        $field_instance_xml = $field_instance_language_xml->addChild('field-instance');
-        foreach ($instance as $column => $value) {
-          $serialize = FALSE;
-          if (is_array($value)) {
-            $value = serialize($value);
-            $serialize = TRUE;
-          }
-          $element_xml = $field_instance_xml->addChild('column', views_atom_sanitize($value));
-          $element_xml->addAttribute('name', $column);
-          if (!empty($serialize)) {
-            $element_xml->addAttribute('serialize', $serialize);
+        // TODO Need to account for language.
+        foreach ($field_language_instances as $instance) {
+          $field_instance_xml = $field_instance_language_xml->addChild('field-instance');
+          foreach ($instance as $column => $value) {
+            $serialize = FALSE;
+            if (is_array($value)) {
+              $value = serialize($value);
+              $serialize = TRUE;
+            }
+            $element_xml = $field_instance_xml->addChild('column', views_atom_sanitize($value));
+            $element_xml->addAttribute('name', $column);
+            if (!empty($serialize)) {
+              $element_xml->addAttribute('serialize', $serialize);
+            }
           }
         }
-      }
       }
 
       module_invoke_all('views_atom_render_field', $field_xml, $field, $field_info['type']);
