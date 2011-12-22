@@ -187,17 +187,20 @@ function field_views_atom_render($node, $entity_xml) {
   }
 }
 
-function filefield_views_atom_render_field(SimpleXMLElement $field_xml, $field, $field_type) {
+function file_views_atom_render_field(SimpleXMLElement $field_xml, $field, $field_type) {
 
   // For filefields, also encode the complete URL to the file so that it can be
   // pulled by the remote system.
-  if ($field_type == 'filefield') {
-    $instances = $field_xml->{'field-instance'};
-
-    foreach ($field as $i => $instance) {
-      $url = file_create_url($instance['filepath']);
-      $new_column = $instances[$i]->addChild('column', $url);
-      $new_column->addAttribute('name', 'full_url');
+  if ($field_type == 'file') {
+    // $language counter
+    $l = 0;
+    foreach ($field as $language_key => $field_language_instances) {
+      foreach ($field_language_instances as $i => $instance) {
+        $url = file_create_url($instance['uri']);
+        $new_column = $field_xml->{'language'}[$l]->{'field-instance'}[0]->addChild('column', $url);
+        $new_column->addAttribute('name', 'full_url');
+      }
+    $l++;
     }
   }
 }
