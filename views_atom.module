@@ -160,9 +160,13 @@ function field_views_atom_render($node, $entity_xml) {
       $field_xml->addAttribute('type', $field_info['type']);
       $field_xml->addAttribute('name', $field_name);
 
+      foreach ($field as $language_code => $field_language_instances) {
+        $field_instance_language_xml = $field_xml->addChild('language');
+        $field_instance_language_xml->addAttribute('type', $language_code);
+
       // TODO Need to account for language.
-      foreach ($field[LANGUAGE_NONE] as $instance) {
-        $field_instance_xml = $field_xml->addChild('field-instance');
+      foreach ($field_language_instances as $instance) {
+        $field_instance_xml = $field_instance_language_xml->addChild('field-instance');
         foreach ($instance as $column => $value) {
           $serialize = FALSE;
           if (is_array($value)) {
@@ -175,6 +179,7 @@ function field_views_atom_render($node, $entity_xml) {
             $element_xml->addAttribute('serialize', $serialize);
           }
         }
+      }
       }
 
       module_invoke_all('views_atom_render_field', $field_xml, $field, $field_info['type']);
@@ -199,6 +204,8 @@ function filefield_views_atom_render_field(SimpleXMLElement $field_xml, $field, 
 
 /**
  * Implementation of hook_views_atom_render().
+ *
+ * // TODO revisit this function in light of Field API changes.
  */
 function taxonomy_views_atom_render($node, $entity_xml) {
   $taxonomy_xml = $entity_xml->addChild('taxonomy');
