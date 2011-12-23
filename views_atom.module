@@ -187,6 +187,9 @@ function field_views_atom_render($node, $entity_xml) {
   }
 }
 
+/**
+ * Implements hook_views_atom_render_field().
+ */
 function file_views_atom_render_field(SimpleXMLElement $field_xml, $field, $field_type) {
 
   // For filefields, also encode the complete URL to the file so that it can be
@@ -203,6 +206,15 @@ function file_views_atom_render_field(SimpleXMLElement $field_xml, $field, $fiel
     $l++;
     }
   }
+}
+
+/**
+ * Implements hook_views_atom_render_field().
+ *
+ * TODO build out this implementation that wasn't necessary in D6.
+ */
+function image_views_atom_render_field(SimpleXMLElement $field_xml, $field, $field_type) {
+
 }
 
 /**
