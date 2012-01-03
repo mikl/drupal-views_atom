@@ -235,27 +235,42 @@ function _file_views_atom_render_field(SimpleXMLElement $field_xml, $field, $fie
 }
 
 /**
- * Implementation of hook_views_atom_render().
- *
- * // TODO revisit this function in light of Field API changes.
+ * Implements hook_views_atom_render_field().
  */
-function taxonomy_views_atom_render($node, $entity_xml) {
-  $taxonomy_xml = $entity_xml->addChild('taxonomy');
+function taxonomy_views_atom_render_field(SimpleXMLElement $field_xml, $field, $field_type) {
 
-  if (!empty($node->taxonomy)) {
-    foreach ($node->taxonomy as $tid => $term) {
-      global $base_url;
-      $term_path = url(taxonomy_term_path($term), array('absolute' => TRUE, 'alias' => TRUE));
-      $vocabulary = taxonomy_vocabulary_load($term->vid);
+  // For filefields, also encode the complete URL to the file so that it can be
+  // pulled by the remote system.
+  if ($field_type == 'taxonomy_term_reference') {
 
-      $term_xml = $taxonomy_xml->addChild('term');
-      $term_xml->addAttribute('name', $term->name);
-      $term_xml->addChild('link', $term_path);
-      $term_xml->addChild('label', $term->name);
-      $term_xml->addChild('title', $term->name);
-      $term_xml->addChild('subject', $term->name);
-      $term_xml->addChild('description', views_atom_sanitize($term->description));
-      $term_xml->addChild('taxonomy_vocabulary', $vocabulary->name);
+    $l = 0;
+    foreach ($field as $language_key => $field_language_instances) {
+      foreach ($field_language_instances as $i => $instance) {
+
+        if (!empty($instance['tid']) && $term = taxonomy_term_load($instance['tid'])) {
+
+
+         // TODO, discern what data is needed here.
+         $new_column = $field_xml->{'language'}[$l]->{'field-instance'}[$i]->addChild('column', $term->name);
+         $new_column->addAttribute('name', 'term_name');
+
+/*
+         // $term_path = url(taxonomy_term_path($term), array('absolute' => TRUE, 'alias' => TRUE));
+          $vocabulary = taxonomy_vocabulary_load($term->vid);
+
+         // $field_xml = $taxonomy_xml->addChild('term');
+          $field_xml->addAttribute('name', $term->name);
+        //  $field_xml->addChild('link', $term_path);
+          $field_xml->addChild('label', $term->name);
+          $field_xml->addChild('title', $term->name);
+          $field_xml->addChild('subject', $term->name);
+          $field_xml->addChild('description', views_atom_sanitize($term->description));
+          $field_xml->addChild('taxonomy_vocabulary', $vocabulary->name);
+*/
+        }
+      }
+      $l++;
     }
   }
 }
+
