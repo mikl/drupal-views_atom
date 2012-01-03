@@ -141,11 +141,9 @@ function views_atom_sanitize($string) {
   return $string;
 }
 
-
 /**
  * Implementation of hook_views_atom_render().
  */
-
 function field_views_atom_render($node, $entity_xml) {
 
   // TODO, this is still completely node-centric
@@ -195,16 +193,7 @@ function file_views_atom_render_field(SimpleXMLElement $field_xml, $field, $fiel
   // For filefields, also encode the complete URL to the file so that it can be
   // pulled by the remote system.
   if ($field_type == 'file') {
-    // $language counter
-    $l = 0;
-    foreach ($field as $language_key => $field_language_instances) {
-      foreach ($field_language_instances as $i => $instance) {
-        $url = file_create_url($instance['uri']);
-        $new_column = $field_xml->{'language'}[$l]->{'field-instance'}[0]->addChild('column', $url);
-        $new_column->addAttribute('name', 'full_url');
-      }
-    $l++;
-    }
+    _file_views_atom_render_field($field_xml, $field, $field_type);
   }
 }
 
@@ -215,6 +204,34 @@ function file_views_atom_render_field(SimpleXMLElement $field_xml, $field, $fiel
  */
 function image_views_atom_render_field(SimpleXMLElement $field_xml, $field, $field_type) {
 
+  // For filefields, also encode the complete URL to the file so that it can be
+  // pulled by the remote system.
+  if ($field_type == 'image') {
+    _file_views_atom_render_field($field_xml, $field, $field_type);
+  }
+}
+
+/**
+ * Helper function for hook_views_atom_render_field().
+ *
+ * Drupal 7 splits image and file fields. However, the needed hook logic is the same
+ * for both.
+ */
+function _file_views_atom_render_field(SimpleXMLElement $field_xml, $field, $field_type) {
+
+  // For filefields, also encode the complete URL to the file so that it can be
+  // pulled by the remote system.
+
+  // $language counter
+  $l = 0;
+  foreach ($field as $language_key => $field_language_instances) {
+    foreach ($field_language_instances as $i => $instance) {
+      $url = file_create_url($instance['uri']);
+      $new_column = $field_xml->{'language'}[$l]->{'field-instance'}[0]->addChild('column', $url);
+      $new_column->addAttribute('name', 'full_url');
+    }
+    $l++;
+  }
 }
 
 /**
