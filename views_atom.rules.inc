@@ -6,15 +6,23 @@
 function views_atom_rules_action_info() {
   $actions['views_atom_rules_action_add_to_feed'] = array(
     'label' => t('Add an entity to a feed'),
+    'group' => t('Views Atom'),
     'arguments' => array(
       'node' => array(
         'type' => 'node',
         'label' => t('Node'),
       ),
     ),
-    'module' => 'Views Atom',
+    'parameter' => array(
+      'view_display' => array(
+        'type' => 'list<text>',
+        'label' => t('View and Display'),
+        'options list' => 'views_atom_get_feed_displays_options',
+        'description' => t('Select the view and display that is responsible for generating the feed for this node. Only Feed displays are available.'),
+      ),
+    ),
+    'base' => 'views_atom_rules_action_add_to_feed',
   );
-
   $actions['views_atom_rules_action_add_nids_to_feed'] = array(
     'label' => t('Add multiple nids to a feed'),
     'arguments' => array(
@@ -25,15 +33,28 @@ function views_atom_rules_action_info() {
     ),
     'module' => 'Views Atom',
   );
-
   return $actions;
 }
 
 /* ===== Action: Add To Feed ===== */
 
+
+
+function views_atom_get_feed_displays_options() {
+
+  $options = array();
+  foreach (views_atom_get_feed_displays() as $entry) {
+    $options[$entry['title']][$entry['name'] . '-' . $entry['display']] = $entry['display_title'];
+  }
+
+
+  return $options;
+}
+
+
 /**
  * Form callback for the views_atom_rules_action_add_to_feed action.
- */
+ * /
 function views_atom_rules_action_add_to_feed_form($settings, &$form) {
 
   foreach (views_atom_get_feed_displays() as $entry) {
