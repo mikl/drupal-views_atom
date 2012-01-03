@@ -227,7 +227,7 @@ function _file_views_atom_render_field(SimpleXMLElement $field_xml, $field, $fie
   foreach ($field as $language_key => $field_language_instances) {
     foreach ($field_language_instances as $i => $instance) {
       $url = file_create_url($instance['uri']);
-      $new_column = $field_xml->{'language'}[$l]->{'field-instance'}[0]->addChild('column', $url);
+      $new_column = $field_xml->{'language'}[$l]->{'field-instance'}[$i]->addChild('column', $url);
       $new_column->addAttribute('name', 'full_url');
     }
     $l++;
