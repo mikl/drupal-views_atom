@@ -14,6 +14,14 @@ function views_atom_rules_action_info() {
       ),
     ),
     'parameter' => array(
+      // TODO, should this be "node" instead of "entity" ?
+      'data' => array(
+        'type' => 'entity',
+        'label' => t('Entity'),
+        'description' => t(''),
+        'restriction' => 'selector',
+        'wrapped' => TRUE,
+      ),
       'view_display' => array(
         'type' => 'list<text>',
         'label' => t('View and Display'),
@@ -47,7 +55,6 @@ function views_atom_get_feed_displays_options() {
     $options[$entry['title']][$entry['name'] . '-' . $entry['display']] = $entry['display_title'];
   }
 
-
   return $options;
 }
 
@@ -55,7 +62,7 @@ function views_atom_get_feed_displays_options() {
 /**
  * Form callback for the views_atom_rules_action_add_to_feed action.
  * /
-function views_atom_rules_action_add_to_feed_form($settings, &$form) {
+function views_atom_rules_action_add_to_feed_form($settings, $form) {
 
   foreach (views_atom_get_feed_displays() as $entry) {
     $options[$entry['title']][$entry['name'] . '-' . $entry['display']] = $entry['display_title'];
@@ -72,7 +79,7 @@ function views_atom_rules_action_add_to_feed_form($settings, &$form) {
 
 /**
  * Form submission callback for the views_atom_rules_action_add_to_feed action.
- */
+ * /
 function views_atom_rules_action_add_to_feed_submit(&$settings, $form, $form_state) {
   list($settings['view'], $settings['view_display']) = explode('-', $form_state['values']['generating_display']);
 }
@@ -85,20 +92,34 @@ function views_atom_rules_action_add_to_feed_submit(&$settings, $form, $form_sta
  * @param $settings
  *   Configuration specified by the user.
  */
-function views_atom_rules_action_add_to_feed($node, $settings) {
-  $nid = $node->nid;
+function views_atom_rules_action_add_to_feed($data, $views_display, $settings, RulesState $state, RulesPlugin $element) {
+  //$nid = $node->nid;
 
-  $view = views_get_view($settings['view']);
-  $view->set_display($settings['view_display']);
+  // TODO, revisit this variable name.
+  $views_displays = $views_display;
 
-  if ($view->access($settings['view_display'])) {
+  // TODO, revisit this method of gettting the nid.
+  //
+  // TODO, question whether Views is necessary at all for the atomization.
+  // parts of render() inside of views_plugin_row_rdf_node could be abstracted out.
+  $nid = $data->getIdentifier();
+
+  foreach($views_displays as $view_name_and_display) {
+    list($view_name, $view_display_name) = explode('-', $view_name_and_display);
+
+
+    $view = views_get_view($view_name);
+    $view->set_display($view_display_name);
+
+  if ($view->access($view_display_name)) {
 
     // If this node existed in the system prior to this page request, there is a chance
     // that it needs to be reloaded and thus node_load() needs to be reset.
-    node_load($param = array(), $revision = NULL, $reset = TRUE);
+    // TODO, revisit this for D7.
+    // node_load($param = array(), $revision = NULL, $reset = TRUE);
 
     // Get the atom-formatted-data for this node.
-    $result = $view->preview($settings['view_display'], array($nid));
+    $result = $view->preview($view_display_name, array($nid));
     // Only PuSH the feed if there is actual data.  The view may have filtered
     // our nids down to 0, in which case we don't want to send anything. Because
     // normal View requests (Pull-based) are unaffected, Atom subscriptions still
@@ -106,8 +127,12 @@ function views_atom_rules_action_add_to_feed($node, $settings) {
     if (!empty($view->result)) {
       $topic_url = url($view->display[$view->current_display]->display_options['path'], array('absolute' => TRUE));
       // This uses the Drupal Queue module to actually send notifications later.
+
+      // TODO, need a check that push_hub exists. Maybe in action_info.
       push_hub_notify($topic_url, $result);
     }
+  }
+
   }
 }
 
