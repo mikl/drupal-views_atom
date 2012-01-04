@@ -111,28 +111,27 @@ function views_atom_rules_action_add_to_feed($data, $views_display, $settings, R
     $view = views_get_view($view_name);
     $view->set_display($view_display_name);
 
-  if ($view->access($view_display_name)) {
+    if ($view->access($view_display_name)) {
 
-    // If this node existed in the system prior to this page request, there is a chance
-    // that it needs to be reloaded and thus node_load() needs to be reset.
-    // TODO, revisit this for D7.
-    // node_load($param = array(), $revision = NULL, $reset = TRUE);
+      // If this node existed in the system prior to this page request, there is a chance
+      // that it needs to be reloaded and thus node_load() needs to be reset.
+      // TODO, revisit this for D7.
+      // node_load($param = array(), $revision = NULL, $reset = TRUE);
 
-    // Get the atom-formatted-data for this node.
-    $result = $view->preview($view_display_name, array($nid));
-    // Only PuSH the feed if there is actual data.  The view may have filtered
-    // our nids down to 0, in which case we don't want to send anything. Because
-    // normal View requests (Pull-based) are unaffected, Atom subscriptions still
-    // work as normal.
-    if (!empty($view->result)) {
-      $topic_url = url($view->display[$view->current_display]->display_options['path'], array('absolute' => TRUE));
-      // This uses the Drupal Queue module to actually send notifications later.
+      // Get the atom-formatted-data for this node.
+      $result = $view->preview($view_display_name, array($nid));
+      // Only PuSH the feed if there is actual data.  The view may have filtered
+      // our nids down to 0, in which case we don't want to send anything. Because
+      // normal View requests (Pull-based) are unaffected, Atom subscriptions still
+      // work as normal.
+      if (!empty($view->result)) {
+        $topic_url = url($view->display[$view->current_display]->display_options['path'], array('absolute' => TRUE));
+        // This uses the Drupal Queue module to actually send notifications later.
 
-      // TODO, need a check that push_hub exists. Maybe in action_info.
-      push_hub_notify($topic_url, $result);
+        // TODO, need a check that push_hub exists. Maybe in action_info.
+        push_hub_notify($topic_url, $result);
+      }
     }
-  }
-
   }
 }
 
