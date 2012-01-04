@@ -215,4 +215,18 @@ class views_plugin_style_atom_fields extends views_plugin_style {
     }
     return $items;
   }
+
+  /**
+   * Override the parent render() method to check if this View is empty.
+   *
+   * @TODO, this override is useless without a new empty handler. The delete functionality
+   * should be replicated there.
+   */
+  function render() {
+   if (empty($this->view->result) && !$this->view->style_plugin->even_empty()) {
+     return $this->view->display_handler->render_area('empty');
+   } else {
+     return parent::render();
+   }
+  }
 }
