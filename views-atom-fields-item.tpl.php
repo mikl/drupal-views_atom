@@ -1,4 +1,4 @@
-<?php // $Id$ ?>
+<?php // @TODO, document this file ?>
 
 <entry>
   <title><?php echo $atom_title; ?></title>
