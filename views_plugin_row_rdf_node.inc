@@ -58,7 +58,8 @@ class views_plugin_row_rdf_node extends views_plugin_row_rdf {
     // treat any primitive values on the node object as properties.  That will
     // get more than we need, but it works well enough.
     foreach ($node as $property => $value) {
-      if (is_scalar($value) && !empty($value)) {
+      // @TODO, reexamine the use of empty() here. I've had to add the check for '0'
+      if (is_scalar($value) && (!empty($value) || $value === '0')) {
         // We want to map the date fields to Atom/RDF format properly.  The others
         // we'll just send along as is.
         if (in_array($property, array('created', 'changed'))) {
