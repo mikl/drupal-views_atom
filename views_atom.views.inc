@@ -40,6 +40,8 @@ function views_atom_views_plugins() {
     'type' => 'feed',
   );
 
+
+  // @todo, where is this plugin used?
   $info['row']['rdf'] = array(
     'title' => t('RDF'),
     'help' => t('Displays the fields with an optional template.'),

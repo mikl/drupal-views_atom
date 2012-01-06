@@ -20,7 +20,7 @@ class views_plugin_style_atom_delete extends views_plugin_style {
   function option_definition() {
     $options = parent::option_definition();
     $options['guid'] = array(
-      // TODO determine what this variable is.
+      // @todo, determine what this variable is.
       'use_feed' => array('default' => array()),
     );
 
@@ -57,7 +57,7 @@ class views_plugin_style_atom_delete extends views_plugin_style {
   function query() {
     parent::query();
 
-    // TODO
+    // @todo
     // I don't think this is a good way to do this.
     if (empty($this->view->query->fields['nid'])) {
       $this->view->query->fields['nid'] = array(

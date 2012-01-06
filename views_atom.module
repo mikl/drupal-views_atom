@@ -146,7 +146,7 @@ function views_atom_sanitize($string) {
  */
 function field_views_atom_render($node, $entity_xml) {
 
-  // TODO, this is still completely node-centric
+  // @todo, this is still completely node-centric
   $fields = field_info_instances('node', $node->type);
 
   foreach ($fields as $field_name => $field_config) {
@@ -162,7 +162,7 @@ function field_views_atom_render($node, $entity_xml) {
         $field_instance_language_xml = $field_xml->addChild('language');
         $field_instance_language_xml->addAttribute('name', $language_code);
 
-        // TODO Need to account for language.
+        // @todo Need to account for language.
         foreach ($field_language_instances as $instance) {
           $field_instance_xml = $field_instance_language_xml->addChild('field-instance');
           foreach ($instance as $column => $value) {
@@ -199,13 +199,10 @@ function file_views_atom_render_field(SimpleXMLElement $field_xml, $field, $fiel
 
 /**
  * Implements hook_views_atom_render_field().
- *
- * TODO build out this implementation that wasn't necessary in D6.
  */
 function image_views_atom_render_field(SimpleXMLElement $field_xml, $field, $field_type) {
 
-  // For filefields, also encode the complete URL to the file so that it can be
-  // pulled by the remote system.
+  // Use the same helper function as file module.
   if ($field_type == 'image') {
     _file_views_atom_render_field($field_xml, $field, $field_type);
   }
@@ -236,6 +233,8 @@ function _file_views_atom_render_field(SimpleXMLElement $field_xml, $field, $fie
 
 /**
  * Implements hook_views_atom_render_field().
+ *
+ * @todo, complete the upgrade of this function from 6 to 7.
  */
 function taxonomy_views_atom_render_field(SimpleXMLElement $field_xml, $field, $field_type) {
 
@@ -250,23 +249,23 @@ function taxonomy_views_atom_render_field(SimpleXMLElement $field_xml, $field, $
         if (!empty($instance['tid']) && $term = taxonomy_term_load($instance['tid'])) {
 
 
-         // TODO, discern what data is needed here.
+         // @todo, discern what data is needed here.
          $new_column = $field_xml->{'language'}[$l]->{'field-instance'}[$i]->addChild('column', $term->name);
          $new_column->addAttribute('name', 'term_name');
 
-/*
+          /*
          // $term_path = url(taxonomy_term_path($term), array('absolute' => TRUE, 'alias' => TRUE));
           $vocabulary = taxonomy_vocabulary_load($term->vid);
 
-         // $field_xml = $taxonomy_xml->addChild('term');
+          //$field_xml = $taxonomy_xml->addChild('term');
           $field_xml->addAttribute('name', $term->name);
-        //  $field_xml->addChild('link', $term_path);
+          //$field_xml->addChild('link', $term_path);
           $field_xml->addChild('label', $term->name);
           $field_xml->addChild('title', $term->name);
           $field_xml->addChild('subject', $term->name);
           $field_xml->addChild('description', views_atom_sanitize($term->description));
           $field_xml->addChild('taxonomy_vocabulary', $vocabulary->name);
-*/
+          */
         }
       }
       $l++;

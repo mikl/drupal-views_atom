@@ -164,7 +164,7 @@ function template_preprocess_views_atom_fields_item(&$vars) {
  * Theme function for feed icon.
  */
 function theme_views_atom_feed_icon($url, $title, $icon) {
-  // TODO: Should this theme views_atom_feed_icon be declared in hook_theme()?
+  // @todo, Should this theme views_atom_feed_icon be declared in hook_theme()?
   if ($image = theme('image', array('path' => $icon, 'width' => t('Download Atom Feed'), 'height' => $title))) {
     return '<a href="' . check_url($url) . '" class="feed-icon">' . $image . '</a>';
   }
