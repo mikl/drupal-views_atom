@@ -91,7 +91,7 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area {
     $format = isset($this->options['format']) ? $this->options['format'] : filter_default_format();
     if (!$empty || !empty($this->options['empty'])) {
       //return $this->render_textarea($this->options['content'], $format);
-      return theme('views_atom_tombstone', array());
+      return theme('views_atom_tombstone', array('title' => 'Test title'));
     }
     return '';
   }
