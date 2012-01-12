@@ -34,6 +34,20 @@ function views_atom_theme() {
       'variables' => array('url', 'title', 'icon'),
       'file' => 'views_atom.theme.inc',
     ),
+    'views_atom_tombstone' => array(
+      'variables' => array(
+        'title' => NULL,
+        'link' => NULL,
+        'use_push' => FALSE,
+        'hub_url' => NULL,
+        'feed_url' => NULL,
+        'updated' => NULL,
+        'link' => NULL,
+        'items' => NULL,
+      ),
+      'file' => 'views_atom.theme.inc',
+      'template' => 'views-atom-fields-item',
+    ),
   );
 }
 
