@@ -70,3 +70,25 @@ function views_atom_views_plugins() {
 
   return $info;
 }
+
+/**
+ * Implements hook_views_data().
+ */
+function views_atom_views_data() {
+  $data = array();
+  $data['views_atom']['table']['group'] = t('Global');
+  $data['views_atom']['table']['join'] = array(
+    // #global is a special flag which let's a table appear all the time.
+    '#global' => array(),
+  );
+
+  $data['views_atom']['views_atom_atom_tombstone'] = array(
+    'title' => t('Views Atom Atom Tombstone'),
+    'help' => t('Provide a tombstone for a given id'),
+    'area' => array(
+      'handler' => 'views_atom_handler_area_atom_tombstone',
+    ),
+  );
+
+  return $data;
+}

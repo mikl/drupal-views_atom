@@ -9,3 +9,4 @@ files[] = views_plugin_row_rdf.inc
 files[] = views_plugin_row_rdf_node.inc
 files[] = views_plugin_style_atom_delete.inc
 files[] = views_plugin_style_atom_fields.inc
+files[] = includes/views_atom_handler_area_atom_tombstone.inc

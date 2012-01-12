@@ -9,7 +9,7 @@
  * @ingroup views_area_handlers Views' area handlers
 */
 
-class views_handler_area_text extends views_handler_area {
+class views_atom_handler_area_atom_tombstone extends views_handler_area {
 
   function option_definition() {
     $options = parent::option_definition();
