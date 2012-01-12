@@ -90,8 +90,32 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area {
   function render($empty = FALSE) {
     $format = isset($this->options['format']) ? $this->options['format'] : filter_default_format();
     if (!$empty || !empty($this->options['empty'])) {
-      //return $this->render_textarea($this->options['content'], $format);
-      return theme('views_atom_tombstone', array('title' => 'Test title'));
+
+
+      $tombstone_array =
+      array(
+        'title' => 'Test Title',
+        'link' => NULL,
+        'use_push' => TRUE,
+
+        // Need a field for this
+        'hub_url' => url('pubsubhubbub/endpoint', array('absolute' => TRUE)),
+
+        // @todo Need a field for this
+        'feed_url' => 'feed_url',  // http://d7upgrades.persch.sandbox/node/54/atom
+
+        // Should this be when the node was last updated?
+        'updated' => NULL,
+
+         // @todo, how is this diffent from feed URL
+        'link' => NULL,
+        'items' => NULL,
+      );
+
+
+
+      return $this->render_textarea($this->options['content'], $format) .
+       "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" . theme('views_atom_tombstone', $tombstone_array);
     }
     return '';
   }
