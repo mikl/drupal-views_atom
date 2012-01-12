@@ -46,7 +46,7 @@ function views_atom_theme() {
         'items' => NULL,
       ),
       'file' => 'views_atom.theme.inc',
-      'template' => 'views-atom-fields-item',
+      'template' => 'views-atom-tombstone',
     ),
   );
 }
