@@ -41,6 +41,7 @@ function views_atom_theme() {
         'hub_url' => NULL,
         'feed_url' => NULL,
         'updated' => array(),
+        'show_updated_comment' => TRUE,
         'items' => NULL,
       ),
       'file' => 'views_atom.theme.inc',

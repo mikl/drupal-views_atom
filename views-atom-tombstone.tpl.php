@@ -9,7 +9,11 @@
   <updated><?php echo $updated; ?></updated>
   <generator uri="<?php echo $feed_url; ?>">Drupal</generator>
   <?php foreach ($items as $item) : ?>
-    <at:deleted-entry ref="<?php echo $item['guid']; ?>" when="<?php echo $item['when']; ?>"<?php if (empty($item['by'])) { ?>/><?php } else { ?>>
+    <at:deleted-entry ref="<?php echo $item['guid']; ?>" when="<?php echo $item['when']; ?>"<?php if (empty($item['by'])) {
+      print "/>";
+      print "<!-- $updated_comment -->";
+    } else {
+      print '>'; ?>
           <at:by>
             <?php if ($item['by']['name']) :?>
               <name><?php echo $item['by']['name']; ?></name>

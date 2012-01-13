@@ -169,3 +169,10 @@ function theme_views_atom_feed_icon($url, $title, $icon) {
     return '<a href="' . check_url($url) . '" class="feed-icon">' . $image . '</a>';
   }
 }
+
+function template_preprocess_views_atom_tombstone(&$vars) {
+
+  if ($vars['show_updated_comment']) {
+    $vars['updated_comment'] = t('No deletion timestamp is available. Using the current time instead.');
+  }
+}

@@ -74,14 +74,18 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area_text {
     if (!$empty || !empty($this->options['empty'])) {
 
       $updated = date('c', REQUEST_TIME);
+      // If we are using the REQUEST as the updated variable then we don't really
+      // know when the entity was deleted and a human-readable comment will be set.
+      $show_updated_comment = TRUE;
+
       $tombstone_array = array(
         // @todo, what should title be, a field?
         'title' => t('Atom Tombstone'),
         'use_push' => $this->options['use_push'],
         'hub_url' => $this->render_option_as_url('hub_url'),
         'feed_url' => $this->render_option_as_url('feed_url'),
-        // @todo Should this be when the node was last updated?
         'updated' => $updated,
+        'show_updated_comment' => $show_updated_comment,
         'items' => array(),
       );
 
