@@ -13,15 +13,28 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area {
 
   function option_definition() {
     $options = parent::option_definition();
+    $options['feed_url'] = array('default' => NULL);
     $options['hub_url'] = array('default' => NULL);
+    $options['item_url'] = array('default' => NULL);
     $options['content'] = array('default' => '', 'translatable' => TRUE, 'format_key' => 'format');
     $options['format'] = array('default' => NULL);
     $options['tokenize'] = array('default' => FALSE);
+    $options['use_push'] = array('default' => FALSE);
+
+    // @todo, options could be added for updated, and email and name.
+
     return $options;
   }
 
   function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
+
+    $form['use_push'] = array(
+      '#type' => 'checkbox',
+      // @todo better title?
+      '#title' => t('Use Push Hub'),
+      '#default_value' => $this->options['use_push'],
+    );
 
     $form['hub_url'] = array(
       '#title' => 'Hub URL',
@@ -29,6 +42,26 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area {
       '#default_value' => $this->options['hub_url'],
       // @todo, better description.
       '#description' => t('Enter an absolute path of a pubsubhubbub URL. You can also enter a path relative to this site which will then be transformed into an absolute.'),
+      '#dependency' => array(
+        'edit-options-use-push' => array(1),
+      ),
+    );
+
+    $form['feed_url'] = array(
+      '#title' => 'Feed URL',
+      '#type' => 'textfield',
+      '#default_value' => $this->options['feed_url'],
+      // @todo, better description.
+      '#description' => t('Enter an absolute path of a feed URL. You can also enter a path relative to this site which will then be transformed into an absolute.'),
+    );
+
+    // This will not work if the node was aliased when it existed.
+    $form['item_url'] = array(
+      '#title' => 'Item URL',
+      '#type' => 'textfield',
+      '#default_value' => $this->options['item_url'],
+      // @todo, better description.
+      '#description' => t('Enter an absolute path of the item to delete. You can also enter a path relative to this site which will then be transformed into an absolute.'),
     );
 
     $form['content'] = array(
@@ -100,28 +133,39 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area {
     $format = isset($this->options['format']) ? $this->options['format'] : filter_default_format();
     if (!$empty || !empty($this->options['empty'])) {
 
-
+      $updated = date('c', REQUEST_TIME);
       $tombstone_array =
       array(
-        'title' => 'Test Title',
-        'link' => NULL,
-        'use_push' => TRUE,
-
-        // Need a field for this
-
-        // @todo, security?
-        'hub_url' => url($this->view->style_plugin->tokenize_value($this->options['hub_url'], 0), array('absolute' => TRUE)),
-
-        // @todo Need a field for this
-        'feed_url' => 'feed_url',  // http://d7upgrades.persch.sandbox/node/54/atom
-
-        // Should this be when the node was last updated?
-        'updated' => NULL,
-
-         // @todo, how is this diffent from feed URL
-        'link' => NULL,
-        'items' => array(),
+        // @todo, what should title be?
+        'title' => t('Atom Tombstone'),
+        // @todo Needs a field for use_push.
+        'use_push' => $this->options['use_push'],
+        'hub_url' => NULL,
+        'feed_url' => NULL,
+        // @todo Should this be when the node was last updated?
+        'updated' => $updated,
       );
+
+      if (!empty($this->options['hub_url'])) {
+        // @todo, security on tokenize? What happens if something maliscious is used in "!1" ?
+        $tombstone_array['hub_url'] = url($this->view->style_plugin->tokenize_value($this->options['hub_url'], 0), array('absolute' => TRUE));
+      }
+
+      if (!empty($this->options['feed_url'])) {
+        // @todo, security on tokenize? What happens if something maliscious is used in "!1" ?
+        $tombstone_array['feed_url'] = url($this->view->style_plugin->tokenize_value($this->options['feed_url'], 0), array('absolute' => TRUE));
+      }
+
+      if (!empty($this->options['item_url'])) {
+        // @todo, security on tokenize? What happens if something maliscious is used in "!1" ?
+        $tombstone_array['items'] = array(
+          array(
+            'guid' => url($this->view->style_plugin->tokenize_value($this->options['item_url'], 0), array('absolute' => TRUE)),
+            'when' => $updated,
+          )
+        );
+      }
+
 
 
 
