@@ -170,6 +170,9 @@ function theme_views_atom_feed_icon($url, $title, $icon) {
   }
 }
 
+/**
+ * Preprocess for theme('views_atom_tombstone').
+ */
 function template_preprocess_views_atom_tombstone(&$vars) {
 
   if ($vars['show_updated_comment']) {
