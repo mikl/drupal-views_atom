@@ -6,7 +6,7 @@
   <id><?php print $id ?></id>
   <?php if ($use_push) : ?>
     <link rel="hub" href="<?php echo $hub_url; ?>" />
-    <link rel="self" href="<?php echo $feed_url; ?>" />
+    <link rel="self" href="<?php echo $feed_url; /* @todo don't use both $feed_url and $link for the same thing. */?>" />
   <?php endif; ?>
   <updated><?php echo $updated; ?></updated>
   <generator uri="<?php echo $link; ?>">Drupal</generator>

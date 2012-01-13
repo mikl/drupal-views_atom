@@ -1,3 +1,4 @@
+<?php // @todo, delete this file. reroute to views_atom_tombstone ?>
 <?php print "<?xml"; ?> version="1.0" encoding="utf-8" <?php print "?>"; ?>
 
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:at="http://purl.org/atompub/tombstones/1.0">
