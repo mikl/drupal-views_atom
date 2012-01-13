@@ -13,6 +13,7 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area {
 
   function option_definition() {
     $options = parent::option_definition();
+    $options['hub_url'] = array('default' => NULL);
     $options['content'] = array('default' => '', 'translatable' => TRUE, 'format_key' => 'format');
     $options['format'] = array('default' => NULL);
     $options['tokenize'] = array('default' => FALSE);
@@ -22,14 +23,22 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area {
   function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
 
+    $form['hub_url'] = array(
+      '#title' => 'Hub URL',
+      '#type' => 'textfield',
+      '#default_value' => $this->options['hub_url'],
+      // @todo, better description.
+      '#description' => t('Enter an absolute path of a pubsubhubbub URL. You can also enter a path relative to this site which will then be transformed into an absolute.'),
+    );
+
     $form['content'] = array(
       '#type' => 'text_format',
       '#default_value' => $this->options['content'],
       '#rows' => 6,
       '#format' => isset($this->options['format']) ? $this->options['format'] : filter_default_format(),
       '#wysiwyg' => FALSE,
+      '#access' => FALSE,
     );
-
 
     $form['tokenize'] = array(
       '#type' => 'checkbox',
@@ -99,7 +108,9 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area {
         'use_push' => TRUE,
 
         // Need a field for this
-        'hub_url' => url('pubsubhubbub/endpoint', array('absolute' => TRUE)),
+
+        // @todo, security?
+        'hub_url' => url($this->view->style_plugin->tokenize_value($this->options['hub_url'], 0), array('absolute' => TRUE)),
 
         // @todo Need a field for this
         'feed_url' => 'feed_url',  // http://d7upgrades.persch.sandbox/node/54/atom
@@ -109,7 +120,7 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area {
 
          // @todo, how is this diffent from feed URL
         'link' => NULL,
-        'items' => NULL,
+        'items' => array(),
       );
 
 
