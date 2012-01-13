@@ -13,12 +13,16 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area {
 
   function option_definition() {
     $options = parent::option_definition();
+
+        // Don't need content and format
+    //unset($options['format'], $options['content']);
+
     $options['feed_url'] = array('default' => NULL);
     $options['hub_url'] = array('default' => NULL);
     $options['item_url'] = array('default' => NULL);
     $options['content'] = array('default' => '', 'translatable' => TRUE, 'format_key' => 'format');
     $options['format'] = array('default' => NULL);
-    $options['tokenize'] = array('default' => FALSE);
+
     $options['use_push'] = array('default' => FALSE);
 
     // @todo, options could be added for updated, and email and name.
@@ -62,15 +66,6 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area {
       '#default_value' => $this->options['item_url'],
       // @todo, better description.
       '#description' => t('Enter an absolute path of the item to delete. You can also enter a path relative to this site which will then be transformed into an absolute.'),
-    );
-
-    $form['content'] = array(
-      '#type' => 'text_format',
-      '#default_value' => $this->options['content'],
-      '#rows' => 6,
-      '#format' => isset($this->options['format']) ? $this->options['format'] : filter_default_format(),
-      '#wysiwyg' => FALSE,
-      '#access' => FALSE,
     );
 
     $form['tokenize'] = array(
@@ -123,12 +118,6 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area {
     }
   }
 
-  function options_submit(&$form, &$form_state) {
-    $form_state['values']['options']['format'] = $form_state['values']['options']['content']['format'];
-    $form_state['values']['options']['content'] = $form_state['values']['options']['content']['value'];
-    parent::options_submit($form, $form_state);
-  }
-
   function render($empty = FALSE) {
     $format = isset($this->options['format']) ? $this->options['format'] : filter_default_format();
     if (!$empty || !empty($this->options['empty'])) {
@@ -136,38 +125,23 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area {
       $updated = date('c', REQUEST_TIME);
       $tombstone_array =
       array(
-        // @todo, what should title be?
+        // @todo, what should title be, a field?
         'title' => t('Atom Tombstone'),
-        // @todo Needs a field for use_push.
         'use_push' => $this->options['use_push'],
-        'hub_url' => NULL,
-        'feed_url' => NULL,
+        'hub_url' => $this->render_option_as_url('hub_url'),
+        'feed_url' => $this->render_option_as_url('feed_url'),
         // @todo Should this be when the node was last updated?
         'updated' => $updated,
+        'items' => array(),
       );
-
-      if (!empty($this->options['hub_url'])) {
-        // @todo, security on tokenize? What happens if something maliscious is used in "!1" ?
-        $tombstone_array['hub_url'] = url($this->view->style_plugin->tokenize_value($this->options['hub_url'], 0), array('absolute' => TRUE));
-      }
-
-      if (!empty($this->options['feed_url'])) {
-        // @todo, security on tokenize? What happens if something maliscious is used in "!1" ?
-        $tombstone_array['feed_url'] = url($this->view->style_plugin->tokenize_value($this->options['feed_url'], 0), array('absolute' => TRUE));
-      }
 
       if (!empty($this->options['item_url'])) {
         // @todo, security on tokenize? What happens if something maliscious is used in "!1" ?
-        $tombstone_array['items'] = array(
-          array(
-            'guid' => url($this->view->style_plugin->tokenize_value($this->options['item_url'], 0), array('absolute' => TRUE)),
-            'when' => $updated,
-          )
+        $tombstone_array['items'][] = array(
+          'guid' => $this->render_option_as_url('item_url'),
+          'when' => $updated,
         );
       }
-
-
-
 
       return $this->render_textarea($this->options['content'], $format) .
        "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" . theme('views_atom_tombstone', $tombstone_array);
@@ -187,4 +161,21 @@ class views_atom_handler_area_atom_tombstone extends views_handler_area {
     }
   }
 
+  /**
+   * Render a text area, using the proper format.
+   */
+  function render_option_as_url($option_name) {
+    if (!empty($this->options[$option_name])) {
+      if ($this->options['tokenize']) {
+        $value = $this->view->style_plugin->tokenize_value($this->options[$option_name], 0);
+      }
+      else {
+        $value = $this->options[$option_name];
+      }
+      return url($value, array('absolute' => TRUE));
+    }
+    else {
+      return '';
+    }
+  }
 }
