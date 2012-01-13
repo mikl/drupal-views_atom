@@ -11,7 +11,9 @@
   <?php foreach ($items as $item) : ?>
     <at:deleted-entry ref="<?php echo $item['guid']; ?>" when="<?php echo $item['when']; ?>"<?php if (empty($item['by'])) {
       print "/>";
-      print "<!-- $updated_comment -->";
+      if (!empty($show_updated_comment) && !empty($updated_comment)) {
+        print "<!-- $updated_comment -->";
+      }
     } else {
       print '>'; ?>
           <at:by>
