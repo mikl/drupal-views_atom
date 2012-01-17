@@ -91,7 +91,7 @@ class views_plugin_style_atom_fields extends views_plugin_style {
       );
 
       // Field Chooser
-      $field_names[$field] = array('' => '--');
+      $field_names = array('' => '--');
       foreach ($handlers as $field => $handler) {
         if ($label = $handler->label()) {
           $field_names[$field] = $label;
