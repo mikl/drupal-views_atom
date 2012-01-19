@@ -100,7 +100,6 @@ function template_preprocess_views_view_views_atom_delete(&$vars) {
 
 }
 
-
 /**
  * Preprocess for theme('views_atom_fields_item').
  */
@@ -110,6 +109,8 @@ function template_preprocess_views_atom_fields_item(&$vars) {
   $view = $vars['view'];
   $options = $view->style_options;
 
+  // @todo, This can yield PHP notices if the entry_type is not defined
+  // What should the default be?
   $vars['entry_type'] = ($options['entry_type'] == 'xml') ? $options['entry_type_custom'] : $options['entry_type'];
 
   $nid_alias = isset($view->field['nid']) ? $view->field['nid']->field_alias : 'nid';
