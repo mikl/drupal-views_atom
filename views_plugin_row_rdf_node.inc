@@ -14,6 +14,49 @@ class views_plugin_row_rdf_node extends views_plugin_row_rdf {
   var $base_table = 'node';
   var $base_field = 'nid';
 
+  function option_definition() {
+    $options['field_exclusions_fieldset'] = array(
+      'excluded_fields' => array('default' => array()),
+    );
+
+    return $options;
+  }
+
+  /**
+   * Provide a form for setting options.
+   */
+  function options_form(&$form, &$form_state) {
+    parent::options_form($form, $form_state);
+
+    // Add an option to exclude from fields from the Atom.
+    // For instance, a site may not want to syndicate it's site-specific taxomy fields.
+    if (module_exists('field')) {
+
+      $field_exlusion_options = array();
+      $all_fields = field_info_fields();
+
+      foreach($all_fields as $name => $field_info) {
+        // @todo, add label to display in addition to machine name.
+        $field_exlusion_options[$name] = $name;
+      }
+
+      $form['field_exclusions_fieldset'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Field Exclusions'),
+        '#description' => t('Specify which fields should be excluded from the rendered atom.'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      );
+
+      $form['field_exclusions_fieldset']['excluded_fields'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Excluded Fields'),
+        '#options' => $field_exlusion_options,
+        '#default_value' => $this->options['field_exclusions_fieldset']['excluded_fields'],
+      );
+    }
+  }
+
   function render($row) {
     // For the most part, this code is taken from node_feed() in node.module
     global $base_url;
@@ -68,6 +111,20 @@ class views_plugin_row_rdf_node extends views_plugin_row_rdf {
         else {
           $properties_xml->addChild($property, views_atom_sanitize($value));
         }
+      }
+    }
+
+    // Add an attribute to the node object if certain fields should be excluded
+    // from the xml.
+    $excluded_fields = array();
+    if (!empty($this->options['field_exclusions_fieldset']['excluded_fields'])) {
+      foreach ($this->options['field_exclusions_fieldset']['excluded_fields'] as $field_name => $exclude) {
+        if (!empty($exclude)) {
+          $excluded_fields[$field_name] = $field_name;
+        }
+      }
+      if (!empty($excluded_fields)) {
+        $node->views_atom_excluded_fields = $excluded_fields;
       }
     }
 

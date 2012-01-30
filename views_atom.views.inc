@@ -63,7 +63,7 @@ function views_atom_views_plugins() {
     'theme file' => 'views_atom.theme.inc',
     'theme path' => drupal_get_path('module', 'views_atom'),
     'uses fields' => TRUE,
-    'uses options' => FALSE,
+    'uses options' => TRUE,
     'type' => 'feed',
     'parent' => 'rdf',
   );
