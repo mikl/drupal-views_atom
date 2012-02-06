@@ -60,40 +60,44 @@ function views_atom_get_feed_displays_options() {
  */
 function views_atom_rules_action_add_to_feed($data, $views_display, $settings, RulesState $state, RulesPlugin $element) {
 
-  // @todo, revisit this variable name.
-  $views_displays = $views_display;
+  // @todo, ideal this rules_action would go in push_hub or a more generic atom module.
+  if (module_exists('push_hub')) {
 
-  // @todo, question whether Views is necessary at all for the atomization.
-  // parts of render() inside of views_plugin_row_rdf_node could be abstracted out.
-  $nid = $data->getIdentifier();
+    // @todo, revisit this variable name.
+    $views_displays = $views_display;
 
-  foreach($views_displays as $view_name_and_display) {
-    list($view_name, $view_display_name) = explode('-', $view_name_and_display);
+    // @todo, question whether Views is necessary at all for the atomization.
+    // parts of render() inside of views_plugin_row_rdf_node could be abstracted out.
+    $nid = $data->getIdentifier();
 
-    $view = views_get_view($view_name);
-    $view->set_display($view_display_name);
+    foreach($views_displays as $view_name_and_display) {
+      list($view_name, $view_display_name) = explode('-', $view_name_and_display);
 
-    if ($view->access($view_display_name)) {
+      $view = views_get_view($view_name);
+      $view->set_display($view_display_name);
 
-      // If this node existed in the system prior to this page request, there is a chance
-      // that it needs to be reloaded and thus node_load() needs to be reset.
-      // @todo, revisit this for D7.
-       node_load(NULL, NULL, $reset = TRUE);
+      if ($view->access($view_display_name)) {
 
-      // Get the atom-formatted-data for this node.
-      $result = $view->preview($view_display_name, array($nid));
+        // If this node existed in the system prior to this page request, there is a chance
+        // that it needs to be reloaded and thus node_load() needs to be reset.
+        // @todo, revisit this for D7.
+        node_load(NULL, NULL, $reset = TRUE);
+
+        // Get the atom-formatted-data for this node.
+        $result = $view->preview($view_display_name, array($nid));
 
 
-      // Only PuSH the feed if there is actual data.  The view may have filtered
-      // our nids down to 0, in which case we don't want to send anything. Because
-      // normal View requests (Pull-based) are unaffected, Atom subscriptions still
-      // work as normal.
-      if (!empty($view->result)) {
-        $topic_url = url($view->get_url(), array('absolute' => TRUE));
+        // Only PuSH the feed if there is actual data.  The view may have filtered
+        // our nids down to 0, in which case we don't want to send anything. Because
+        // normal View requests (Pull-based) are unaffected, Atom subscriptions still
+        // work as normal.
+        if (!empty($view->result)) {
+          $topic_url = url($view->get_url(), array('absolute' => TRUE));
 
-        // This uses the Drupal Queue module to actually send notifications later.
-        // @todo, need a check that push_hub exists. Maybe in action_info.
-        push_hub_notify($topic_url, $result);
+          // This uses the Drupal Queue module to actually send notifications later.
+          // @todo, need a check that push_hub exists. Maybe in action_info.
+          push_hub_notify($topic_url, $result);
+        }
       }
     }
   }
