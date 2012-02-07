@@ -179,4 +179,9 @@ function template_preprocess_views_atom_tombstone(&$vars) {
   if ($vars['show_updated_comment']) {
     $vars['updated_comment'] = t('No deletion timestamp is available. Using the current time instead.');
   }
+
+  // Set updated time to now if empty.
+  if (empty($vars['updated'])) {
+    $vars['updated'] = date('c', REQUEST_TIME);
+  }
 }

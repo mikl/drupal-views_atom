@@ -4,6 +4,9 @@
  * Implements hook_rules_action_info().
  */
 function views_atom_rules_action_info() {
+
+  $actions = array();
+
   $actions['views_atom_rules_action_add_to_feed'] = array(
     'label' => t('Add an entity to a feed'),
     'group' => t('Views Atom'),
@@ -32,7 +35,79 @@ function views_atom_rules_action_info() {
     'base' => 'views_atom_rules_action_add_to_feed',
   );
 
+  $actions['views_atom_rules_action_send_tombstone'] = array(
+    'label' => t('Send node tombstone'),
+    'group' => t('Views Atom'),
+    'arguments' => array(
+      'node' => array(
+        'type' => 'node',
+        'label' => t('Node'),
+      ),
+    ),
+    'parameter' => array(
+      // @todo, should this be "node" instead of "entity" ?
+      'data' => array(
+        'type' => 'entity',
+        'label' => t('Entity'),
+        'description' => t(''),
+        'restriction' => 'selector',
+        'wrapped' => TRUE,
+      ),
+      'topic_url' => array(
+        'type' => 'text',
+        'label' => t('Topic URL --- TEXT'),
+        'description' => t(' '),
+      ),
+    ),
+    'base' => 'views_atom_rules_action_send_tombstone',
+  );
+
   return $actions;
+}
+
+/**
+ * Rule implementation callback for sending a tombstone for a specific node.
+ *
+ * @param $data
+ *   A wrapped Drupal entity
+ * @param $views_diplay
+ *   A concatenation of views name and display id
+ */
+function views_atom_rules_action_send_tombstone($data, $topic_url, $settings, RulesState $state, RulesPlugin $element) {
+
+  // @todo, ideal this rules_action would go in push_hub or a more generic atom module.
+  if (module_exists('push_hub')) {
+
+    $nid = $data->getIdentifier();
+
+    // Note the confusing alias flag. TRUE means "this has already been aliased,
+    // which is the way to prevent url from trying to find an alias.
+    $topic_url = url($topic_url, array('absolute' => TRUE, 'alias' => TRUE));
+    $updated = date('c', REQUEST_TIME);
+
+    $items = array(
+      array(
+        // Note the confusing alias flag. TRUE means "this has already been aliased,
+        // which is the way to prevent url from trying to find an alias.
+        'guid' => url('node/' . $nid, array('absolute' => TRUE, 'alias' => TRUE)),
+        'when' => $updated,
+      )
+    );
+
+    $tombstone_array = array(
+        'title' => t('Tombstone'),
+        'use_push' => TRUE,
+        'hub_url' => url('pubsubhubbub/endpoint', array('absolute' => TRUE)),
+        'feed_url' => $topic_url,
+        'updated' => $updated,
+        'show_updated_comment' => FALSE,
+        'items' => $items,
+      );
+
+    $tombstone = theme('views_atom_tombstone', $tombstone_array);
+    // @todo, make send_mode configurable.
+    push_hub_notify($topic_url, $tombstone, PUSH_HUB_IMMEDIATE);
+  }
 }
 
 /**
@@ -53,10 +128,10 @@ function views_atom_get_feed_displays_options() {
 /**
  * Rule implementation callback for adding a node to a feed.
  *
- * @param $node
- *   The node that triggered this action.
- * @param $settings
- *   Configuration specified by the user.
+ * @param $data
+ *   A wrapped Drupal entity
+ * @param $views_diplay
+ *   A concatenation of views name and display id
  */
 function views_atom_rules_action_add_to_feed($data, $views_display, $settings, RulesState $state, RulesPlugin $element) {
 
@@ -92,14 +167,15 @@ function views_atom_rules_action_add_to_feed($data, $views_display, $settings, R
         // normal View requests (Pull-based) are unaffected, Atom subscriptions still
         // work as normal.
         if (!empty($view->result)) {
-          $topic_url = url($view->get_url(), array('absolute' => TRUE));
 
-          // This uses the Drupal Queue module to actually send notifications later.
-          // @todo, need a check that push_hub exists. Maybe in action_info.
-          push_hub_notify($topic_url, $result);
+          // @todo, make aliasing configurable.
+          // Note the confusing alias flag. TRUE means "this has already been aliased,
+          // which is the way to prevent url from trying to find an alia.
+          $topic_url = url($view->get_url(), array('absolute' => TRUE, 'alias' => TRUE));
+          // @todo, make a send_mode configurable?
+          push_hub_notify($topic_url, $result, PUSH_HUB_IMMEDIATE);
         }
       }
     }
   }
 }
-
