@@ -106,7 +106,7 @@ function views_atom_rules_action_send_tombstone($data, $topic_url, $settings, Ru
 
     $tombstone = theme('views_atom_tombstone', $tombstone_array);
     // @todo, make send_mode configurable.
-    push_hub_notify($topic_url, $tombstone, PUSH_HUB_IMMEDIATE);
+    push_hub_notify($topic_url, $tombstone, PUSH_HUB_IMMEDIATE|PUSH_HUB_CRON);
   }
 }
 
@@ -161,7 +161,6 @@ function views_atom_rules_action_add_to_feed($data, $views_display, $settings, R
         // Get the atom-formatted-data for this node.
         $result = $view->preview($view_display_name, array($nid));
 
-
         // Only PuSH the feed if there is actual data.  The view may have filtered
         // our nids down to 0, in which case we don't want to send anything. Because
         // normal View requests (Pull-based) are unaffected, Atom subscriptions still
@@ -173,7 +172,7 @@ function views_atom_rules_action_add_to_feed($data, $views_display, $settings, R
           // which is the way to prevent url from trying to find an alia.
           $topic_url = url($view->get_url(), array('absolute' => TRUE, 'alias' => TRUE));
           // @todo, make a send_mode configurable?
-          push_hub_notify($topic_url, $result, PUSH_HUB_IMMEDIATE);
+          push_hub_notify($topic_url, $result, PUSH_HUB_IMMEDIATE|PUSH_HUB_CRON);
         }
       }
     }
