@@ -36,7 +36,7 @@ function template_preprocess_views_view_views_atom_fields(&$vars) {
   template_preprocess_views_view_views_atom($vars);
 
   $view = $vars['view'];
-  $options = $view->style_options;
+  $options = $vars['options'];
 
   $vars['content'] = '';
   $updated = 0;
@@ -49,7 +49,7 @@ function template_preprocess_views_view_views_atom_fields(&$vars) {
       $alias = $view->field[$options['fields']['atom_updated']]->field_alias;
       $updated = max($item->$alias, $updated);
     }
-    $vars['content'] .= theme('views_atom_fields_item', array('content' => $content, 'view' => $view, 'item' => $item));
+    $vars['content'] .= theme('views_atom_fields_item', array('content' => $content, 'view' => $view, 'item' => $item, 'options' => $options));
   }
 
   // If this is an empty feed, set the last updated time to right now.
@@ -107,7 +107,7 @@ function template_preprocess_views_atom_fields_item(&$vars) {
 
   $item = $vars['item'];
   $view = $vars['view'];
-  $options = $view->style_options;
+  $options = $vars['options'];
 
   // @todo, This can yield PHP notices if the entry_type is not defined
   // What should the default be?
