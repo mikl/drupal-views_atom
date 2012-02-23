@@ -23,7 +23,12 @@ class views_plugin_row_rdf_node extends views_plugin_row_rdf {
       return;
     }
 
-    $node = node_load($nid);
+    if (!empty($this->view->views_atom_nodes[$nid])) {
+      $node = $this->view->views_atom_nodes[$nid];
+    }
+    else {
+      $node = node_load($nid);
+    }
 
     // Allow other modules to modify the node before we start serializing it.
     module_invoke_all('views_atom_prerender', $node);

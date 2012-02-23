@@ -153,10 +153,12 @@ function views_atom_rules_action_add_to_feed($data, $views_display, $settings, R
 
       if ($view->access($view_display_name)) {
 
-        // If this node existed in the system prior to this page request, there is a chance
-        // that it needs to be reloaded and thus node_load() needs to be reset.
-        // @todo, revisit this for D7.
-        node_load(NULL, NULL, $reset = TRUE);
+        // Set this version of the node object on the View so it can be accessed by views_plugin_row_rdf_node.inc
+        // @todo, This is somewhat of a hack and should be replaced by a proper external atom libary.
+        $node = $data->value();
+        $view->views_atom_nodes = array(
+          $nid => $node,
+        );
 
         // Get the atom-formatted-data for this node.
         $result = $view->preview($view_display_name, array($nid));
