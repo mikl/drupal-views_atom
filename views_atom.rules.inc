@@ -136,10 +136,12 @@ function views_atom_get_feed_displays_options() {
  */
 function views_atom_rules_action_add_to_feed($data, $views_display, $settings, RulesState $state, RulesPlugin $element) {
 
-  // @todo, ideal this rules_action would go in push_hub or a more generic atom module.
+  // @todo, ideally this rules_action would go in push_hub or a more generic atom module.
   if (module_exists('push_hub')) {
 
     // @todo, revisit this variable name.
+    // There is inconsistency between plural and singular because it is unclear
+    // if a rule should only deal with a single display or n displays.
     $views_displays = $views_display;
 
     // @todo, question whether Views is necessary at all for the atomization.
