@@ -76,6 +76,7 @@ function views_atom_rules_action_info() {
 function views_atom_rules_action_send_tombstone($data, $topic_url, $settings, RulesState $state, RulesPlugin $element) {
 
   // @todo, ideal this rules_action would go in push_hub or a more generic atom module.
+  // That generic module might follow this discussion: http://groups.drupal.org/node/197583
   if (module_exists('push_hub')) {
 
     $nid = $data->getIdentifier();
